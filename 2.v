@@ -1,21 +1,12 @@
 `timescale 1ns/1ps
 
-module dFF(
-    input D, clk, reset,
-    output reg Q
-);
-    always @(posedge clk) begin
-            Q <=D;
-    end
-endmodule
-
 module counterDecoder(
     input stop, clk,
     output out, 
     output [3:0] countOut
 );
 
-    reg [3:0] ps;
+    reg [3:0] ps = 4'd0;
     wire [3:0] ns, inc;
 
     always @(posedge clk)
