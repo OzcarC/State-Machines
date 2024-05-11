@@ -1,18 +1,28 @@
 `timescale 1ns/1ps
 
 module dFF(
-    input D, clk,
-    output Q
+    input D, clk, reset,
+    output reg Q
 );
     always @(posedge clk) begin
-        Q <=D;
+        if(~reset) begin
+            Q<=0;
+        end
+        else
+            Q <=D;
     end
 endmodule
 
-module mooreSM(input in, clk, output out0,out1,out2);
+module mooreSM(
+    input in, clk, reset, 
+    output [2:0] out
+);
+
+    wire out0,out2;
 
     wire ps0,ps1, ps0_bar, ps1_bar, in_bar;
-    wire ns0,ns1,top_ns0,bot_ns0, top_ns1, bot_ns1;
+    wire ns0,ns1;
+    wire top_ns0,bot_ns0, top_ns1, bot_ns1;
 
     not(ps0_bar,ps0);
     not(ps1_bar,ps1);
@@ -26,11 +36,11 @@ module mooreSM(input in, clk, output out0,out1,out2);
     and(bot_ns0,in,ps1_bar);
     or(ns0,top_ns0,bot_ns0);
 
-    dFF d0(ns0,clk,ps0);
-    dFF d1(ns1,clk,ps1);
+    dFF d0(ns0,clk,reset,ps0);
+    dFF d1(ns1,clk,reset,ps1);
     
-    and(out2,ps1,ps0_bar);
-    assign out1 = ps0;
-    assign out0 = ~(ps0 ^ ps1);
+    and(out[2],ps1,ps0_bar);
+    assign out[1] = ps0;
+    assign out[0] = ~(ps0 ^ ps1);
 
 endmodule
