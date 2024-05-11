@@ -3,6 +3,7 @@
 module mooreTb;
 
     reg in, clk, reset;
+    reg [2:0] state;
     wire [2:0] out;
     integer i,j;
 
@@ -29,6 +30,9 @@ module mooreTb;
         #50 in = 1;
     end
 
-    always @(out,reset,in)
-        $monitor("state:%d\t\tin: %d     reset: %d",out,in,reset);
+    always @(out,reset,in) begin
+        state <= out-1;
+        $monitor("state:%d\t\tout:%d\tin: %d     reset: %d",state,out,in,reset);
+    end
+
 endmodule
